@@ -1,0 +1,16 @@
+{
+  "name": "vehicle-routing-demo",
+  "dockerComposeFile": ["../docker-compose.yml"],
+  "service": "dev",
+  "workspaceFolder": "/workspaces/vehicle_routing_demo",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode-remote.remote-containers"
+      ]
+    }
+  },
+  "shutdownAction": "stopCompose"
+}

@@ -1,0 +1,23 @@
+services:
+  osrm:
+    image: osrm/osrm-backend:latest
+    container_name: osrm-tokyo
+    command: /bin/bash -lc "/data/osrm_prep.sh && osrm-routed --algorithm mld /data/tokyo.osrm"
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./osrm/files:/data
+      - ./osrm/osrm_prep.sh:/data/osrm_prep.sh
+    restart: unless-stopped
+
+  dev:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    container_name: vrp-dev
+    volumes:
+      - .:/workspaces/vehicle_routing_demo
+    working_dir: /workspaces/vehicle_routing_demo
+    depends_on:
+      - osrm
+    tty: true
