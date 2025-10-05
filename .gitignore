@@ -1,1 +1,3 @@
 osrm/files/*
+!osrm/files/.gitkeep
+.DS_Store
