@@ -2,7 +2,9 @@ services:
   osrm:
     image: osrm/osrm-backend:latest
     container_name: osrm-tokyo
-    command: /bin/bash -lc "/data/osrm_prep.sh && osrm-routed --algorithm mld /data/tokyo.osrm"
+    # Apple Silicon の場合は下行を有効化
+    # platform: linux/amd64
+    command: /bin/bash -lc "/data/osrm_prep.sh && osrm-routed --algorithm mld /data/kanto-latest.osrm"
     ports:
       - "5001:5000"
     volumes:

@@ -106,7 +106,32 @@ for v in range(NUM_VEHICLES):
     path.append(manager.IndexToNode(idx))
     routes.append((v, path))
 
+per_vehicle_m = []
+per_vehicle_names = []  # ★ 各トラックの訪問順（店名）
+
+for v, path in routes:
+    # 距離集計
+    d = 0
+    for i, j in zip(path, path[1:]):
+        d += dist_matrix_m[i][j]
+    per_vehicle_m.append(d)
+
+    # 店名の並び（デポ→...→デポ）
+    per_vehicle_names.append([names[n] for n in path])
+
 print(f"[VRP] total distance = {total_m/1000:.3f} km")
+for v, (d, seq_names) in enumerate(zip(per_vehicle_m, per_vehicle_names), start=1):
+    print(f"  - Truck{v}: {d/1000:.3f} km")
+    print("    " + " → ".join(seq_names))
+
+import csv, os
+os.makedirs("./output", exist_ok=True)
+with open("./output/vrp_routes.csv", "w", newline="", encoding="utf-8") as f:
+    w = csv.writer(f)
+    w.writerow(["truck", "distance_km", "sequence"])
+    for v, (d, seq_names) in enumerate(zip(per_vehicle_m, per_vehicle_names), start=1):
+        w.writerow([f"Truck{v}", f"{d/1000:.3f}", " -> ".join(seq_names)])
+print("saved: ./output/vrp_routes.csv")
 
 # --- Folium: 白黒タイルでマーカー＆ルート描画 --------------------------
 m = folium.Map(location=[lats[0], lons[0]], zoom_start=12, tiles="cartodb positron", control_scale=True)
@@ -147,4 +172,4 @@ for v, path in routes:
         ).add_to(m)
 
 m.save("./output/vrp_solution_map.html")
-print("saved: ./outout/vrp_solution_map.html")
+print("saved: ./output/vrp_solution_map.html")
